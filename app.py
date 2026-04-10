@@ -97,7 +97,7 @@ if st.button("Convertir"):
     })
 
 # ------------------ HISTORIAL ------------------
-st.subheader("📜 Historial de transacciones")
+st.subheader("📜 Historial de operaciones")
 
 df = pd.DataFrame(st.session_state.historial)
 
