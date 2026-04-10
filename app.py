@@ -17,7 +17,7 @@ if not st.session_state.logged_in:
     password = st.text_input("Contraseña", type="password")
 
     if st.button("Entrar"):
-        if user == "admin" and password == "1234":
+        if user == "santa" and password == "finbank2026":
             st.session_state.logged_in = True
             st.rerun()
         else:
