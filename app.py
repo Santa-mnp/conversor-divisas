@@ -55,7 +55,7 @@ if "historial" not in st.session_state:
 col1, col2, col3 = st.columns(3)
 
 col1.metric("Clientes", "1,254")
-col2.metric("Transacciones", len(st.session_state.historial))
+col2.metric("Operaciones", len(st.session_state.historial))
 col3.metric("API Status", "Activo 🟢")
 
 st.divider()
