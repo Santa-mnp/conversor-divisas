@@ -45,12 +45,12 @@ if st.button("Convertir"):
 
         # 🧾 guardar historial
         st.session_state.historial.append({
-            "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "base": base,
-            "destino": destino,
-            "monto": monto,
-            "resultado": resultado
-        })
+    "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "base": base,
+    "destino": destino,
+    "monto": monto,
+    "resultado": round(resultado, 2)
+})
 
     except:
         st.error("Error en la conversión")
