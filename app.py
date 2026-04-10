@@ -1,22 +1,21 @@
 import streamlit as st
 import requests
-from datetime import datetime
 import pandas as pd
+from datetime import datetime
+import pytz
 
-st.set_page_config(page_title="Conversor PRO", page_icon="💱", layout="centered")
+st.set_page_config(page_title="FinFX Converter", page_icon="💱", layout="wide")
 
-st.title("💱 Conversor de Divisas PRO")
+st.title("💱 FinFX Converter | PRO")
 
-# 🏳️ Banderas (visual pro)
+monedas = ["USD", "EUR", "DOP"]
+
 banderas = {
     "USD": "🇺🇸 USD",
     "EUR": "🇪🇺 EUR",
     "DOP": "🇩🇴 DOP"
 }
 
-monedas = list(banderas.keys())
-
-# 📊 historial en sesión
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
@@ -34,36 +33,41 @@ if st.button("Convertir"):
 
     url = f"https://open.er-api.com/v6/latest/{base}"
 
-    try:
-        response = requests.get(url)
-        data = response.json()
+    response = requests.get(url)
+    data = response.json()
 
-        tasa = data["rates"][destino]
-        resultado = monto * tasa
+    tasa = data["rates"][destino]
+    resultado = monto * tasa
 
-        st.success(f"Resultado: {resultado:,.2f} {destino}")
+    # 🇩🇴 hora RD
+    tz = pytz.timezone("America/Santo_Domingo")
+    hora_rd = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
 
-        # 🧾 guardar historial
-        st.session_state.historial.append({
-    "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-    "base": base,
-    "destino": destino,
-    "monto": monto,
-    "resultado": f"{resultado:,.2f}"
-})
+    st.success(f"Resultado: {resultado:,.2f} {destino}")
 
-    except:
-        st.error("Error en la conversión")
+    st.session_state.historial.append({
+        "fecha (RD)": hora_rd,
+        "base": base,
+        "destino": destino,
+        "monto": monto,
+        "resultado": f"{resultado:,.2f}"
+    })
 
 # 📜 HISTORIAL
 st.subheader("📜 Historial de conversiones")
 
-if st.session_state.historial:
-    df = pd.DataFrame(st.session_state.historial)
+df = pd.DataFrame(st.session_state.historial)
+
+if not df.empty:
     st.dataframe(df, use_container_width=True)
 
-    # 📈 gráfico simple
-    st.subheader("📈 Evolución de conversiones")
-    st.line_chart(df["resultado"])
+    # 📥 DESCARGA EXCEL
+    excel = df.to_csv(index=False).encode("utf-8")
+    st.download_button("📥 Descargar historial", excel, "historial.csv", "text/csv")
+
+    # 📊 GRÁFICO
+    df["resultado_num"] = df["resultado"].str.replace(",", "").astype(float)
+    st.subheader("📊 Evolución de conversiones")
+    st.line_chart(df["resultado_num"])
 else:
-    st.info("Aún no hay conversiones")
+    st.info("No hay conversiones aún")
