@@ -1,24 +1,38 @@
 import streamlit as st
+import requests
 
-st.title("💱 Conversor de Divisas (modo simple)")
+st.set_page_config(page_title="Conversor de Divisas", page_icon="💱")
 
-tasas = {
-    "USD": {"DOP": 58.5, "EUR": 0.92, "MXN": 17.0},
-    "DOP": {"USD": 0.017, "EUR": 0.016, "MXN": 0.29},
-    "EUR": {"USD": 1.09, "DOP": 63.5, "MXN": 18.5},
-    "MXN": {"USD": 0.059, "DOP": 3.4, "EUR": 0.054}
-}
+st.title("💱 Conversor de Divisas PRO")
 
-monedas = ["USD", "DOP", "EUR", "MXN"]
+monedas = ["USD", "EUR", "DOP", "MXN"]
 
-base = st.selectbox("Moneda base", monedas)
-destino = st.selectbox("Moneda destino", monedas)
+col1, col2 = st.columns(2)
+
+with col1:
+    base = st.selectbox("Moneda base", monedas)
+
+with col2:
+    destino = st.selectbox("Moneda destino", monedas)
+
 monto = st.number_input("Monto", min_value=0.0, value=1.0)
 
 if st.button("Convertir"):
-    if base == destino:
-        resultado = monto
-    else:
-        resultado = monto * tasas[base][destino]
+    url = f"https://api.frankfurter.app/latest?from={base}"
 
-    st.success(f"Resultado: {resultado:.2f} {destino}")
+    try:
+        response = requests.get(url)
+        data = response.json()
+
+        if "rates" in data and destino in data["rates"]:
+            tasa = data["rates"][destino]
+            resultado = monto * tasa
+
+            st.success("Conversión exitosa ✅")
+            st.metric(label="Resultado", value=f"{resultado:.2f} {destino}")
+
+        else:
+            st.error("Moneda no disponible en la API")
+
+    except requests.exceptions.RequestException:
+        st.error("Error de conexión con la API")
