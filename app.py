@@ -49,7 +49,7 @@ if st.button("Convertir"):
     "base": base,
     "destino": destino,
     "monto": monto,
-    "resultado": round(resultado, 2)
+    "resultado": f"{resultado:,.2f}"
 })
 
     except:
