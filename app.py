@@ -14,10 +14,16 @@ monto = st.number_input("Monto", min_value=0.0, value=1.0)
 if st.button("Convertir"):
     url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{base}"
 
-    response = requests.get(url)
-    data = response.json()
+    try:
+        response = requests.get(url)
+        data = response.json()
 
-    tasa = data["conversion_rates"][destino]
-    resultado = monto * tasa
+        if "conversion_rates" in data:
+            tasa = data["conversion_rates"][destino]
+            resultado = monto * tasa
+            st.success(f"Resultado: {resultado:.2f} {destino}")
+        else:
+            st.error("Error con la API. Verifica tu clave.")
 
-    st.success(f"Resultado: {resultado:.2f} {destino}")
+    except:
+        st.error("Error de conexión o API.")
