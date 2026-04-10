@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_KEY = "TU_API_KEY"
+API_KEY = "78897b05d7-5f5121bb62-td95qf"
 
 st.title("💱 Conversor de Divisas")
 
