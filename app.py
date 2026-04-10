@@ -16,8 +16,14 @@ if st.button("Convertir"):
         response = requests.get(url)
         data = response.json()
 
-        tasa = data["rates"][destino]
-        resultado = monto * tasa
+st.write(data)  # 👈 esto nos muestra lo que realmente llega
+
+if "rates" in data:
+    tasa = data["rates"][destino]
+    resultado = monto * tasa
+    st.success(f"Resultado: {resultado:.2f} {destino}")
+else:
+    st.error("La API no devolvió rates")
 
         st.success(f"Resultado: {resultado:.2f} {destino}")
 
