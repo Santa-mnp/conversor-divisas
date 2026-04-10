@@ -1,8 +1,6 @@
 import streamlit as st
 import requests
 
-API_KEY = "fbb0b4469d-4652d46fb6-td98pa"
-
 st.title("💱 Conversor de Divisas")
 
 monedas = ["USD", "DOP", "EUR", "MXN"]
@@ -12,18 +10,15 @@ destino = st.selectbox("Moneda destino", monedas)
 monto = st.number_input("Monto", min_value=0.0, value=1.0)
 
 if st.button("Convertir"):
-    url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{base}"
+    url = f"https://api.exchangerate.host/convert?from={base}&to={destino}&amount={monto}"
 
     try:
         response = requests.get(url)
         data = response.json()
 
-        if "conversion_rates" in data:
-            tasa = data["conversion_rates"][destino]
-            resultado = monto * tasa
-            st.success(f"Resultado: {resultado:.2f} {destino}")
-        else:
-            st.error("Error con la API. Verifica tu clave.")
+        resultado = data["result"]
+
+        st.success(f"Resultado: {resultado:.2f} {destino}")
 
     except:
-        st.error("Error de conexión o API.")
+        st.error("Error al convertir moneda")
