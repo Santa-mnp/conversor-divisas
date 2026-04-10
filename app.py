@@ -10,20 +10,18 @@ destino = st.selectbox("Moneda destino", monedas)
 monto = st.number_input("Monto", min_value=0.0, value=1.0)
 
 if st.button("Convertir"):
-    url = f"https://api.frankfurter.app/latest?from={base}&to={destino}"
+    url = f"https://api.frankfurter.app/latest?from={base}"
 
     try:
         response = requests.get(url)
         data = response.json()
-
-        st.write(data)  # 👈 DEBUG (ver qué llega)
 
         if "rates" in data and destino in data["rates"]:
             tasa = data["rates"][destino]
             resultado = monto * tasa
             st.success(f"Resultado: {resultado:.2f} {destino}")
         else:
-            st.error("La API no devolvió datos válidos")
+            st.error("No se pudo obtener la tasa de cambio")
 
     except Exception as e:
         st.error("Error al convertir moneda")
