@@ -1,7 +1,13 @@
 import streamlit as st
-import requests
 
-st.title("💱 Conversor de Divisas")
+st.title("💱 Conversor de Divisas (modo simple)")
+
+tasas = {
+    "USD": {"DOP": 58.5, "EUR": 0.92, "MXN": 17.0},
+    "DOP": {"USD": 0.017, "EUR": 0.016, "MXN": 0.29},
+    "EUR": {"USD": 1.09, "DOP": 63.5, "MXN": 18.5},
+    "MXN": {"USD": 0.059, "DOP": 3.4, "EUR": 0.054}
+}
 
 monedas = ["USD", "DOP", "EUR", "MXN"]
 
@@ -10,16 +16,9 @@ destino = st.selectbox("Moneda destino", monedas)
 monto = st.number_input("Monto", min_value=0.0, value=1.0)
 
 if st.button("Convertir"):
-    url = f"https://api.exchangerate.host/convert?from={base}&to={destino}&amount={monto}"
+    if base == destino:
+        resultado = monto
+    else:
+        resultado = monto * tasas[base][destino]
 
-    try:
-        response = requests.get(url)
-        data = response.json()
-
-        resultado = data["result"]
-
-        st.success(f"Resultado: {resultado:.2f} {destino}")
-
-    except Exception as e:
-        st.error("Error al convertir moneda")
-        st.write(e)
+    st.success(f"Resultado: {resultado:.2f} {destino}")
