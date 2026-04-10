@@ -54,7 +54,7 @@ if "historial" not in st.session_state:
 # ------------------ TARJETAS DASHBOARD ------------------
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Clientes demo", "1,254")
+col1.metric("Clientes", "1,254")
 col2.metric("Transacciones", len(st.session_state.historial))
 col3.metric("API Status", "Activo 🟢")
 
