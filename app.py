@@ -21,7 +21,7 @@ if st.button("Convertir"):
             tasa = data["rates"][destino]
             resultado = monto * tasa
 
-            st.success(f"Resultado: {resultado:.2f} {destino}")
+            st.success(f"Resultado: {resultado:,.2f} {destino}")
         else:
             st.error("Error en la API")
 
