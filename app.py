@@ -51,20 +51,6 @@ banderas = {
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
-# ------------------ TARJETAS DASHBOARD ------------------
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Clientes", "1,254")
-operaciones = len(st.session_state.historial)
-
-if st.session_state.get("ultima_operacion"):
-    operaciones += 1
-
-col2.metric("Operaciones", operaciones)
-col3.metric("API Status", "Activo 🟢")
-
-st.divider()
-
 # ------------------ INPUTS ------------------
 colA, colB = st.columns(2)
 
@@ -100,6 +86,20 @@ if st.button("Convertir"):
         "resultado": resultado_fmt,
         "resultado_num": resultado
     })
+
+# ------------------ TARJETAS DASHBOARD ------------------
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Clientes", "1,254")
+operaciones = len(st.session_state.historial)
+
+if st.session_state.get("ultima_operacion"):
+    operaciones += 1
+
+col2.metric("Operaciones", operaciones)
+col3.metric("API Status", "Activo 🟢")
+
+st.divider()
 
 st.session_state.ultima_operacion = True
 
