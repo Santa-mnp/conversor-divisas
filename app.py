@@ -96,8 +96,6 @@ if st.button("Convertir"):
         "resultado_num": resultado
     })
 
-st.rerun()
-
 # ------------------ HISTORIAL ------------------
 st.subheader("📜 Historial de operaciones")
 
