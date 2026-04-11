@@ -24,14 +24,14 @@ if not st.session_state.logged_in:
             st.error("Credenciales incorrectas")
     st.stop()
 
-# ------------------ ESTILO FINTECH CLARO ------------------
+# ------------------ ESTILO FINTECH ------------------
 st.markdown("""
 <style>
 .main {
-    background-color: #f7f9fc;
+    background-color: #0e1117;
 }
 h1, h2, h3 {
-    color: #0b2e63;
+    color: #ffffff;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -51,6 +51,23 @@ banderas = {
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
+if "just_clicked" not in st.session_state:
+    st.session_state.just_clicked = False
+
+# ------------------ TARJETAS DASHBOARD ------------------
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Clientes", "1,254")
+
+col2.metric(
+    "Operaciones",
+    len(st.session_state.historial) + (1 if st.session_state.just_clicked else 0)
+)
+
+col3.metric("API Status", "Activo 🟢")
+
+st.divider()
+
 # ------------------ INPUTS ------------------
 colA, colB = st.columns(2)
 
@@ -65,6 +82,8 @@ monto = st.number_input("Monto", min_value=0.0, value=1.0)
 # ------------------ CONVERSIÓN ------------------
 if st.button("Convertir"):
 
+    st.session_state.just_clicked = True
+
     url = f"https://open.er-api.com/v6/latest/{base}"
     data = requests.get(url).json()
 
@@ -73,7 +92,6 @@ if st.button("Convertir"):
 
     fecha = (datetime.utcnow() - timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S")
 
-    # FORMATO BANCO (con coma)
     resultado_fmt = f"{resultado:,.2f}"
 
     st.success(f"Resultado: {resultado_fmt} {destino}")
@@ -87,23 +105,8 @@ if st.button("Convertir"):
         "resultado_num": resultado
     })
 
-# ------------------ TARJETAS DASHBOARD ------------------
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Clientes", "1,254")
-operaciones = len(st.session_state.historial)
-
-if st.session_state.get("ultima_operacion"):
-    operaciones += 1
-
-col2.metric("Operaciones", operaciones)
-col3.metric("API Status", "Activo 🟢")
-
-st.divider()
-
-st.session_state.ultima_operacion = True
-
-st.session_state.ultima_operacion = False
+# ------------------ RESET FLAG ------------------
+st.session_state.just_clicked = False
 
 # ------------------ HISTORIAL ------------------
 st.subheader("📜 Historial de operaciones")
@@ -112,7 +115,6 @@ df = pd.DataFrame(st.session_state.historial)
 
 if not df.empty:
 
-    # filtro fecha
     filtro = st.text_input("Filtrar por fecha (YYYY-MM-DD)")
     if filtro:
         df = df[df["fecha"].str.contains(filtro)]
