@@ -101,6 +101,8 @@ if st.button("Convertir"):
         "resultado_num": resultado
     })
 
+st.session_state.ultima_operacion = True
+
 # ------------------ HISTORIAL ------------------
 st.subheader("📜 Historial de operaciones")
 
