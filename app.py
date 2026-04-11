@@ -150,4 +150,4 @@ if not df.empty:
     )
 
 else:
-    st.info("No hay transacciones aún")
+    st.info("No hay operaciones aún")
